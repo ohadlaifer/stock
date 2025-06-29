@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>חיפוש פריט במחסן</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; direction: rtl; margin-top: 50px; }
+        input, button { padding: 10px; font-size: 16px; }
+        #result { margin-top: 20px; font-size: 18px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>חיפוש פריט במחסן</h2>
+    <input type="text" id="searchInput" placeholder="הקלד שם פריט או ברקוד">
+    <button onclick="searchItem()">חפש</button>
+    <div id="result"></div>
+
+    <script>
+        async function searchItem() {
+            const query = document.getElementById('searchInput').value.trim();
+            const resultDiv = document.getElementById('result');
+            if (!query) {
+                resultDiv.textContent = "אנא הקלד שם פריט או ברקוד";
+                return;
+            }
+
+            // החלף את הקישור בכתובת ה-API שלך מ-SheetDB או Google Apps Script שתחזיר נתוני JSON
+            const apiUrl = `https://sheetdb.io/api/v1/YOUR_API_ID/search?שם פריט=${encodeURIComponent(query)}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.length > 0) {
+                    resultDiv.textContent = `הפריט "${query}" נמצא במדף: ${data[0]["מיקום במחסן"]}`;
+                } else {
+                    resultDiv.textContent = `הפריט "${query}" לא נמצא במלאי`;
+                }
+            } catch (error) {
+                resultDiv.textContent = "אירעה שגיאה בעת ביצוע החיפוש";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
